@@ -79,4 +79,24 @@ resource "aws_security_group" "allow_ssh_priv" {
   }
 }
 
-resource "aws_default_security_group" "default" {}
+resource "aws_vpc" "mainvpc" {
+  cidr_block = "10.1.0.0/16"
+}
+
+resource "aws_default_security_group" "default" {
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
