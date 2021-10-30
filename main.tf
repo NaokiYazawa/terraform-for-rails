@@ -28,4 +28,6 @@ module "alb" {
   ec2_private01  = module.ec2.ec2_private01
   ec2_private02  = module.ec2.ec2_private02
   public_ip      = module.ec2.public_ip
+  region         = var.region
+  ec2_public     = module.ec2.ec2_public
 }

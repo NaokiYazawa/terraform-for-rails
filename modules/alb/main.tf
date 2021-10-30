@@ -61,3 +61,36 @@ resource "aws_route53_record" "www" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_zone" "private" {
+  name = "home"
+
+  vpc {
+    vpc_id     = var.vpc.vpc_id
+    vpc_region = var.region
+  }
+}
+
+resource "aws_route53_record" "jump_priv" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "jump.home"
+  type    = "A"
+  ttl     = "300"
+  records = [var.ec2_public.private_ip]
+}
+
+resource "aws_route53_record" "web01_priv" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "web01.home"
+  type    = "A"
+  ttl     = "300"
+  records = [var.ec2_private01.private_ip]
+}
+
+resource "aws_route53_record" "web02_priv" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "web02.home"
+  type    = "A"
+  ttl     = "300"
+  records = [var.ec2_private02.private_ip]
+}

@@ -22,10 +22,18 @@ variable "sg_priv" {
   type = any
 }
 
+variable "ec2_public" {
+  type = any
+}
+
 variable "ec2_private01" {
   type = any
 }
 
 variable "ec2_private02" {
   type = any
+}
+
+variable "region" {
+  type = string
 }

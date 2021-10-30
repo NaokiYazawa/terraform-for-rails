@@ -17,6 +17,8 @@ module "vpc" {
   single_nat_gateway = false
   # アベイラビリティゾーンにつき1つのNATゲートウェイを設置する。
   one_nat_gateway_per_az = true
+  enable_dns_hostnames   = true
+  enable_dns_support     = true
 }
 
 // SG to allow SSH connections from anywhere
