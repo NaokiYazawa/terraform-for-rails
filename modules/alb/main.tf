@@ -29,6 +29,19 @@ module "alb" {
     }
   ]
 
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = module.acm.acm_certificate_arn
+      target_group_index = 0
+      default_action = {
+        type             = "forward"
+        target_group_arn = module.alb.target_group_arns[0]
+      }
+    }
+  ]
+
   http_tcp_listeners = [
     {
       port               = 80
@@ -38,8 +51,46 @@ module "alb" {
   ]
 }
 
+# resource "aws_acm_certificate" "cert" {
+#   domain_name       = "www.farstep.tk"
+#   validation_method = "DNS"
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
+
 resource "aws_route53_zone" "host_zone" {
   name = "farstep.tk"
+}
+
+
+# resource "aws_route53_record" "cert_validation" {
+#   for_each = {
+#     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+#       name   = dvo.resource_record_name
+#       record = dvo.resource_record_value
+#       type   = dvo.resource_record_type
+#     }
+#   }
+
+#   allow_overwrite = true
+#   name            = each.value.name
+#   records         = [each.value.record]
+#   type            = each.value.type
+#   ttl             = "300"
+
+#   # レコードを追加するドメインのホストゾーンIDを指定
+#   zone_id = aws_route53_zone.host_zone.zone_id
+# }
+
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 3.0"
+
+  domain_name = "www.farstep.tk"
+  zone_id     = aws_route53_zone.host_zone.zone_id
+
+  wait_for_validation = true
 }
 
 resource "aws_route53_record" "jump" {
