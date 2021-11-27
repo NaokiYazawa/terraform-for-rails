@@ -48,8 +48,14 @@ resource "aws_security_group" "allow_ssh_pub" {
   }
 }
 
+// 0.0.0.0/0 を使用すると、すべての IPv4 アドレスが SSH/ を使用して、インスタンスにアクセスすることを許可されます。
+// ::/0 を使用すると、すべての IPv6 アドレスからインスタンスにアクセスできるようになります。
+// これはテスト環境で短時間なら許容できますが、実稼働環境で行うのは安全ではありません。
+// 本番環境では、特定の IP アドレスまたは特定のアドレス範囲にのみ、インスタンスへのアクセスを限定します。
+// https://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html
+
 // SG to onlly allow SSH connections from VPC public subnets
-resource "aws_security_group" "allow_ssh_priv" {
+resource "aws_security_group" "allow_http_and_https_priv" {
   name        = "${var.namespace}-allow_http_https_priv"
   description = "Allow HTTP and HTTPS inbound traffic"
   vpc_id      = module.vpc.vpc_id
@@ -78,7 +84,7 @@ resource "aws_security_group" "allow_ssh_priv" {
   }
 
   tags = {
-    Name = "${var.namespace}-allow_ssh_priv"
+    Name = "${var.namespace}-allow_http_and_https_priv"
   }
 }
 

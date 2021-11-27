@@ -11,6 +11,13 @@ data "aws_ami" "amazon-linux-2" {
   }
 }
 
+# Create EC2 Instance Profile
+resource "aws_iam_instance_profile" "test_profile" {
+  name = "test_profile"
+  role = var.role1.name
+}
+
+
 // Configure the EC2 instance in a public subnet
 resource "aws_instance" "ec2_public" {
   ami                         = data.aws_ami.amazon-linux-2.id
@@ -60,11 +67,11 @@ resource "aws_instance" "ec2_private01" {
   key_name                    = var.key_name
   subnet_id                   = var.vpc.private_subnets[0]
   # vpc_security_group_ids      = [var.sg_priv_id]
+  iam_instance_profile = aws_iam_instance_profile.test_profile.name
 
   tags = {
     "Name" = "${var.namespace}-EC2-PRIVATE01"
   }
-
 }
 
 resource "aws_instance" "ec2_private02" {
@@ -74,9 +81,9 @@ resource "aws_instance" "ec2_private02" {
   key_name                    = var.key_name
   subnet_id                   = var.vpc.private_subnets[1]
   # vpc_security_group_ids      = [var.sg_priv_id]
+  iam_instance_profile = aws_iam_instance_profile.test_profile.name
 
   tags = {
     "Name" = "${var.namespace}-EC2-PRIVATE02"
   }
-
 }

@@ -21,3 +21,7 @@ variable "default_sg_id" {
 # variable "sg_priv_id" {
 #   type = any
 # }
+
+variable "role1" {
+  type = any
+}

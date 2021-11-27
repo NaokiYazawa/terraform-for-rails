@@ -145,3 +145,11 @@ resource "aws_route53_record" "web02_priv" {
   ttl     = "300"
   records = [var.ec2_private02.private_ip]
 }
+
+resource "aws_route53_record" "db" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "db.home"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [replace("${var.db_instance_endpoint}", ":3306", "")]
+}

@@ -37,3 +37,7 @@ variable "ec2_private02" {
 variable "region" {
   type = string
 }
+
+variable "db_instance_endpoint" {
+  type = string
+}
